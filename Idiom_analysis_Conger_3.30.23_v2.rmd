@@ -1,6 +1,6 @@
 ---
 title: "Data Bootcamp Analysis"
-author: "Katie Conger, data curtesy of Geeraert, Newman, & Baayen (2017)"
+author: "Katie Conger, data courtesy of Geeraert, Newman, & Baayen (2017)"
 date: "March 30, 2023"
 #output: html_document
 output: word_document
@@ -21,7 +21,7 @@ One such factor is “frequency”, which is operationalized in a number of ways
 
 My goal with this project was to reexamine the data collected by Geeraert et al. (2016) to investigate the plausibility of underlying latent variables not necessarily identified or addressed in their initial analysis.  More specifically, the analysis presented by Geeraert et al. (2016) focuses on correlations between idiom modifications and the willingness of participants to accept these idiom variations. However, their data allows for latent variable analysis of “frequency”, identifying constructs that may play into a cognitive conceptualization of a term that is not nearly as simple as simply counting single word occurrence. 
 
-In their study, Geeraert et al. (2016) collected a variety of ratings on idioms. Idioms were presented to subjects in one of seven forms:
+In their study, Geeraert et al. (2016) collected a variety of ratings on idioms. Idioms were presented to subjects in one of six forms:
 1. Canonical: the expected, usual form of an idiom (e.g., Although these were new stocks, they suddenly went through the roof.)
 
 2. Literal: a literal usage of an idiom that on its own is ambiguous as to whether one should interpret it literally or figuratively. (e.g., While the guys were re-shingling, they suddenly went through the roof.)
