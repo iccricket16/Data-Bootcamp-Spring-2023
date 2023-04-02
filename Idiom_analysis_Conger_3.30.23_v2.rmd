@@ -1,0 +1,730 @@
+---
+title: "Data Bootcamp Analysis"
+author: "Katie Conger, data curtesy of Geeraert, Newman, & Baayen (2017)"
+date: "March 30, 2023"
+#output: html_document
+output: word_document
+---
+
+
+
+## 1. Introduction 
+The purpose of this project is to demonstrate an ability to analyze data using R. To satisfy the requirements of this project, the portfolio must address three elements. The paper follows this order.  Section 1 identifies my research question or hypothesis. Section 2 explains how data was obtained and analyzed using R. Finally, section 3 evaluates of the dataset with respect to one of the FAIR principles or best practices for data publishing more generally. 
+
+
+My dissertation addresses factors that impact idiom comprehension. An idiom is a phrase whose meaning cannot be derived by combining the literal meaning of its component parts (Hockett 1958, Katz 1973, Weinreich 1969, Pulman 1993, Marlies 1995, Mel’čuk 1995). Unlike literal phrases whose composite meaning results from combining the meaning of the individual words, all idioms are non-compositional because their phrasal meaning is not the sum of their parts. For example, cold turkey does not refer to “a low temperature bird” but instead to “the abrupt cessation of a habitual activity”. Because the meaning of an idiom is not the sum of its parts, all idioms are also formulaic. Thus, we must also know the conventionalized “formula” behind an idiomatic phrase, or which words must appear together to evoke the idiomatic meaning (Nunberg et al. 1994). The goal of this work is to investigate the roles of idiomaticity, noncompositionality and formulaicity in how we think about and understand idioms.
+Idioms are often discussed as if they form a discrete class, cleanly separated from non-idioms by their noncompositional nature and their conventionalized, formulaic meaning. However, the defining features of idioms, noncompositionality and formulaicity, are not unique to these phrases. Additionally, there is a great degree of variation within the class “idiom”, with some idioms seemingly more similar to non-idioms than other idioms. Thus, treatment of idioms as a discrete class may be problematic as there is little reason to assume that there is a binary distinction between a cleanly defined class “idiom” and a separate class “non-idiom”. Within linguistics, many have advocated for a prototype-based account of idioms, with more prototypically idiomatic phrases and prototypically literal phrases at opposite ends and less prototypical members of each class situated closer to the middle (cf. Penttila 2010). 
+
+Within psycholinguistics, clear delineation of the class “idiom” is a point of longstanding contention. With respect to how we think about and understand idioms, some theorize that all members of the class “idiom” are treated the same (cf. Bobrow & Bell 1973, Swinney & Cultler 1979, Cacciari & Tabossi 1988). Others theorize that similarities between idioms and other types of language, as well as differences within the class “idiom”, render a “one-size-fits-all” treatment impossible. However, little is known about which factors impact how we think about and comprehend idioms and whether there are interactions between any such features.
+
+One such factor is “frequency”, which is operationalized in a number of ways, referring to phrasal predictability, subjective (perceived) frequency within specific communities of practice, pointwise mutual information (co-occurrence frequency). My personal research employs pointwise mutual information (PMI). Recently, I found relationships between a number of experimental factors and PMI, with strong methodological implications for future experimental work. While the scope of my work is necessarily limited to PMI, at least for the moment, this project offered an opportunity to examine whether similar relationships exist between subjective frequency, which is known for having several sub-constructs. One study collecting relevant data was conducted by Geeraert (2016), who investigated the relationship between idiom subjective frequency and idiom flexibility, or the degree to which a phrase can be modified without the idiomatic meaning being blocked (e.g., pay through the roof allows for lexical substitution, such as pay through the ceiling but kick the bucket allows for no such substitution *kick the pail).
+
+My goal with this project was to reexamine the data collected by Geeraert et al. (2016) to investigate the plausibility of underlying latent variables not necessarily identified or addressed in their initial analysis.  More specifically, the analysis presented by Geeraert et al. (2016) focuses on correlations between idiom modifications and the willingness of participants to accept these idiom variations. However, their data allows for latent variable analysis of “frequency”, identifying constructs that may play into a cognitive conceptualization of a term that is not nearly as simple as simply counting single word occurrence. 
+
+In their study, Geeraert et al. (2016) collected a variety of ratings on idioms. Idioms were presented to subjects in one of seven forms:
+1. Canonical: the expected, usual form of an idiom (e.g., Although these were new stocks, they suddenly went through the roof.)
+
+2. Literal: a literal usage of an idiom that on its own is ambiguous as to whether one should interpret it literally or figuratively. (e.g., While the guys were re-shingling, they suddenly went through the roof.)
+
+3. Lexical Variation: a word modification or addition made to the canonical condition form (e.g., Although these were new stocks, they suddenly went through the ceiling.)
+
+4. Partial: replacement of an component of the canonical idiom form with a pronoun (e.g., Although these were new stocks, they suddenly went through it.)
+
+5. Integrated Concept: a novel embellishment to a canonical form based on an underlying metaphor (e.g., Although these were new stocks, they suddenly went through the investment roof.) *Of note: not all idioms were metaphorically based which makes this questionable. 
+
+6. Blend: two idioms combined into one (e.g., Although these were new stocks, they suddenly went through the charts. Blend: went through the [roof] and [off the] charts) (Geeraert et al. 2016) 
+Ratings on a scale from 1-100 were collected for idiom acceptability, how often a participant perceived an idiom to be used by others, how often they personally used a given idiom, and how much they liked the idiom. Participants were also asked to indicate whether they knew an idiom or not using a categorical yes/no response. Reaction times for response items were also measured. Using mixed effects linear regression, Geeraert et al. (2016) found a significant correlation between types of idiom variations and acceptability. They used these results as evidence that idioms are not comprehended as phrasal collocations. 
+
+While their statistical methods seem sound, many assumptions underlie their conclusions. Of import for this analysis is the neglected role of probability, prediction, and/or familiarity across conditions. It is my belief that the variables of idiom acceptability and whether one knows an idiom or not should be indicative of the construct “frequency”, where “frequency”in regards to an idiomatic phrase is often conceptualized as a collapsed version of any of the following: cloze probability, prediction, entropy, surprisal, mutual information, and general probability. One may also expect an interaction between how well a participant knows an idiom, how often they have heard an idiom, how often they perceive an idiom to be used by others, and how much they like an idiom. This project will proceed in three stages with the goal of identifying any patterning of variance between these measures that could point to a reflection of the construct of “familiarity”. 
+
+## 2. R Code and Analysis Output
+This section includes the R code and analysis outputs. A brief explanation of each step is included. The steps of the analysis are:
+
+#### 2.1: Ordinal .RESP analysis 
+The first stage will look at ratings of acceptability, how often an idiom is personally used, and how often an idiom is perceived to be used by others. All responses use a 1-100 rating scale. Factor analysis will be performed to see if there is indeed a patterning a variance between these variables. 
+
+#### 2.2: Numeric reaction times to response questions
+All response time factors will be compared to see if there is a patterning a variance between the amount of time required to respond to idioms with regards to acceptability, personal knowledge, personal use, use by others, and how well an idiom is liked. Factor analyses will be performed to see if there is a patterning of variance in response times. Importantly, the variable “known idiom” can be included in this analysis as all .RT measures are numeric whereas the “known idiom” response type was categoric, precluding it from inclusion in Stage 1. Reaction times to a yes/no question versus a scalar rating may still not be entirely comparable if only response time is compared. However, if one is looking for variance patterns versus simply significant mean differences, this is not a problem. 
+
+#### 2.3: Homogenized data types 
+The final stage will attempt to perform a principal component analysis on all factors by first homogenizing the data across types to make numeric, categoric, and ordinal responses comparative. 
+
+
+
+
+### 2.1: Ordinal .RESP analysis 
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+
+library("tidyverse")
+library("lavaan")
+library("psych")
+library("corrplot")
+library("GPArotation")
+
+rm(list = ls())
+
+```
+
+
+#### Load the clean data
+The idiom ratings are described in the paper by Geeraert, Newman, & Baayen (2017), uploaded with these files. Clearly defined explanations of each condition are available by request from the authors. 
+
+  1. Subject
+  2. Age: Age of subject
+  3. Gender (two levels): female and male
+  4. Hand: (two levels): handedness of subject: left and right
+  5. NativeLang: (14 levels): subject's native language
+  6. Idiom: The idiom
+  7. Condition: Type of idiom or phrase
+    + Canonical
+    + Conceptu
+    + Blend
+    + Lexical
+    + Literal
+    + Partial
+  8. AcceptRating.RESP: acceptability rating of phrase's ability to be used
+     literally (which corresponds in some degree to transparency)
+  9. KnowIdiom.RESP: (two levels): yes, no
+  10. HowOftenUse.RESP: how often the subject uses the idiom
+  11. HowOftenOthersUse.RESP: how often other people use the idiom
+  12. LikeUsingIdioms.RESP: how much the subject likes using the idiom
+
+
+The idioms were rated on a 0-100 scale except `KnowIdiom.RESP` which has two levels, "yes" or  "no". The data set included here has 17 variables: Subject, Condition, Age, Gender and Handness. The item ratings names all end in .RESP and have corresponding reaction time measures that end in .RT.
+
+```{r}
+# read in the clean data
+df <- read.csv("Idiom_Data.csv")
+```
+
+#### Create data frames 
+```{r}
+#This selects just the rating response items
+response.items <- df %>% 
+    select(ends_with("RESP"))
+
+#For the purposes of this analysis, the subject column is not needed. This removes the subjects column from df.
+RInoSUB <-df %>% 
+     select(-contains("Subject")) %>%
+     select(-contains("Expression")) 
+    
+#Transform categoric DF columns to numbers. This data frame will be used throughout the analysis. 
+RI<-RInoSUB %>%   ##Change from words to numbers for gender, language, ext.
+    mutate(Condition = case_when(
+    Condition == "Literal" ~ 1, 
+    Condition == "Canonical" ~ 2,
+    Condition == "Lexical" ~ 3,
+    Condition == "Partial" ~ 4,
+    Condition == "Blend" ~ 5,
+    Condition == "Concept" ~ 6)) %>%
+  
+    mutate(KnowIdiom.RESP = case_when(
+    KnowIdiom.RESP == "yes" ~ 1, 
+    KnowIdiom.RESP == "no" ~ 2)) %>%
+
+#Note: Chinese, Cantonese, and Mandarin are collapsed since "Chinese" is the language family including Cantonese and Mandarin. What "Chinese" includes is unknown. 
+    mutate(NativeLang = case_when(
+    NativeLang == "English" ~ 1, 
+    NativeLang == "Chinese" ~ 2,
+    NativeLang == "Mandarin" ~ 2,
+    NativeLang == "Cantonese" ~ 2,
+    NativeLang == "Turkish" ~ 3,
+    NativeLang == "Tagalog" ~ 4,
+    NativeLang == "Russian" ~ 5,
+    NativeLang == "Arabic" ~ 6,
+    NativeLang == "Polish" ~ 7,
+    NativeLang == "Vietnamese" ~ 9,
+    NativeLang == "Punjabi,English" ~ 8)) %>%
+    
+    
+#Though unlikely to matter, mutating handedness and gender for the sake of being thorough.   
+    
+    mutate(Gender = case_when(
+    Gender == "female" ~ 1, 
+    Gender == "male" ~ 2)) %>%
+    
+    mutate(Hand = case_when(
+    Hand == "right" ~ 1, 
+    Hand == "left" ~ 2)) %>%
+
+    
+#RI<-df %>%   ##Adds a column for literal versus figurative of all forms. This could be used for later analysis but is not strictly necessary here.  
+    mutate(Idiom_Type = case_when(
+    Condition == 1 ~ 1, 
+    Condition == 2 ~ 2,
+    Condition == 3 ~ 2,
+    Condition == 4 ~ 2,
+    Condition == 5 ~ 2,
+    Condition == 6 ~ 2)) 
+```
+
+\newpage
+
+### Factor relationships 
+There is reason to believe that certain explored factors are not reflective of separate variables. Instead, it is likely that some, such as frequency, are also related to other factors. Here, I will explore relationships between factors not originally analyzed by Geeracts et al. (2017).
+
+Notes: RI includes all variables, including idiom_type. 
+       RInoSUB includes all variables except idiom_type. RInoSUB allows for testings across parts of speech. 
+       
+
+
+#### Basics: Getting a feel for the data  
+
+Basic information 
+```{r}
+
+describe(RI)
+summary(RI)
+
+describe(RInoSUB)
+summary(RInoSUB)
+
+```
+
+
+#### Exploratory Factor Analysis  (unidimensional)
+Scores in FA are an empirically weighted sums of item scores. The weights are determined by the correlation between items. 
+
+In this section, RInoKnow is introduced. It includes only the 4 response variables: acceptability ratings, how often a participant believes they use a phrase, how often a participant believes others use a phrase, and whether they "like" using the phrase (whether it sounds "correct" to them). This is the same as RInoSUB except that demographic information has been removed such that only the  variables of direct interest remain. 
+
+EFA 1: Explores factors for ordinal response items only  
+```{r}
+
+#1.) Removes categorical KnownIdiom.RESP 
+RInoKnow <-response.items %>% 
+     select(-contains("Know"))
+
+# Unidimensional EFA of RESP items 
+EFA_Model1<-fa(RInoKnow, nfactors = 2) 
+
+# View the factor loadings
+EFA_Model1$loadings
+
+# Create a path diagram of the items' factor loadings
+fa.diagram(EFA_Model1)
+
+# Loading on EFA model 1 
+print(EFA_Model1$loadings, cutoff = 0.2) 
+
+# factor plot for EFA model 1 
+factor.plot(EFA_Model1, title = "Unrotated Factor Loadings for Responses")
+
+```
+Above results: A strong common pattern of variance is seen between the ratings of how often a participant uses an idiom, how often they perceive others use an idiom, and how much they like an idiom. Factor 1 accounts for 93% of the variance of Howoftenuse.RESP, 71.9% of howoftenothersuse.RESP, and 68% of Likeuseingidioms.RESP. Frequency of idiom exposure appears to be the underlying factor uniting these measures. AcceptRating.RESP does not converge or correlate with other factors. 
+
+
+
+#### Communalities for EFA 1 of RESP items 
+This shows the extent to which all items corrolate. 
+
+```{r}
+round(EFA_Model1$communality, 2) 
+```
+
+
+#### Rotate the Loadings
+There is only one significant factor so rotation is not necessary. From this, frequency is a theoretically sound explanation for the loading of factors on item 1 and was expected. 
+```{r}
+EFA_Model1r <- fa(EFA_Model1$loadings, nfactors = 2, rotate = "varimax", fm = "ml")  
+
+factor.plot(EFA_Model1r, title = "Varimax Rotated Factor Loadings")  
+```
+
+
+#### FA of RESP 
+```{r}
+
+# use fa from psych package 
+RInoKnown_FA <- fa(RInoKnow, nfactors = 2, rotate = "none", fm = "ml")
+
+# rotated solution
+RInoKnown_FaRot <- fa(RInoKnow, nfactors = 2, rotate = "varimax", fm = "ml")
+
+factor.plot(RInoKnown_FA, title = "FA of RESP Unrotated")
+factor.plot(RInoKnown_FaRot, title = "FA of RESP Rotated")
+
+```
+
+
+#### Split the data
+```{r}
+# Establishing two sets of indices to split the dataset
+N <- nrow(RI)
+indices <- seq(1,N)
+RInoKnown_indices_EFA <- sample(indices, floor((.5*N)))
+RInoKnown_indices_CFA <- indices[!(indices %in% RInoKnown_indices_EFA)]
+
+
+# Using indices to split the dataset into halves for a EFA and CFA
+RInoKnown_EFA <- RInoKnow[RInoKnown_indices_EFA, ]
+RInoKnown_CFA <- RInoKnow[RInoKnown_indices_CFA, ]
+```
+
+
+#### Bayesian exploratory analysis: used as a check to see if a different method yields similar results 
+```{r}
+library("MPsychoR")
+library("corrplot")
+library("BayesFM")
+
+Privstd <- scale(RInoKnow)
+corrplot(cor(RInoKnow))
+
+```
+#/newpage
+
+
+### 2.2 Numeric reaction times to response questions 
+#### EFA 2: Explores RT scores  
+
+EFA was used to explore the loadings of RT. This was done first with no specified factor number and again with a factor of 3 (which was judged by R to be an appropriate number of factors to use
+
+#### EFA with one factor (unspecified factor number)
+```{r}
+#Select RT items only 
+RT <- RI %>% 
+     select(contains(".RT"))
+
+# Unidimensional EFA with one factor 
+EFA_Model3 <- fa(RT)
+
+# View the factor loadings
+EFA_Model3$loadings
+
+# Create a path diagram of the items' factor loadings
+fa.diagram(EFA_Model3)
+
+# Loading on EFA model 2
+print(EFA_Model3$loadings, cutoff = 0.2) 
+
+## factor plot for EFA model 2
+factor.plot(EFA_Model3, title = "Unrotated Factor Loadings for RT with No Specified Factor Number")
+```
+Using a single factor, RTs to how well liked an idiom is and how often an idiom is personally used load onto the same factor. This is not the case in the 3 factor analysis in 2.2.2. 
+
+#### Communalities for EFA 3
+```{r}
+round(EFA_Model3$communality, 1) 
+```
+
+#### Rotate the Loadings
+This is unnecessary due to the fact that there is only one factor. 
+```{r}
+
+# rotated solution
+EFA_Model3r <- fa(RT, rotate = "varimax", fm = "ml")
+
+factor.plot(EFA_Model3, title = "Single Factor RT Unrotated")
+factor.plot(EFA_Model3r, title = "Single Factor RT Rotated")
+
+```
+
+#### Split practice 
+```{r}
+# Establish two sets of indices to split the dataset
+N <- nrow(RI)
+indices <- seq(1,N)
+RT_indices_EFA <- sample(indices, floor((.5*N)))
+RT_indices_CFA <- indices[!(indices %in% RT_indices_EFA)]
+
+# Use those indices to split the dataset into halves for your EFA and CFA
+RT_EFA <- RT[RT_indices_EFA, ]
+RT_CFA <- RT[RT_indices_CFA, ]
+```
+
+#### This chunk shows that there is only 1 significant shared patterning of variance.
+```{r}
+# Calculate the correlation matrix first (Done earlier, but not for split)
+RT_EFA_cor <- cor(RT_EFA, use = "pairwise.complete.obs")
+
+# Then use that correlation matrix to calculate eigenvalues
+eigenvals <- eigen(RT_EFA_cor)
+
+# Look at the eigenvalues returned
+eigenvals$values
+
+```
+
+#### Below scree plot shows 1 significant factor. 
+```{r}
+# Calculate the correlation matrix first
+RT_EFA_cor <- cor(RT_EFA, use = "pairwise.complete.obs")
+
+# Then use that correlation matrix to create the scree plot
+scree(RT_EFA_cor, factors = FALSE)
+```
+
+### EFA with 3 factor 
+```{r}
+#Select RT items only 
+RT <- RI %>% 
+     select(contains(".RT"))
+
+#Unidimensional EFA with three factors to compare the difference
+EFA_Model3.3<-fa(RT, nfactors = 3)
+
+# View the factor loadings
+EFA_Model3.3$loadings
+
+# Create a path diagram of the items' factor loadings
+fa.diagram(EFA_Model3.3)
+
+# Loading on EFA model 2
+print(EFA_Model3.3$loadings, cutoff = 0.2) 
+
+## factor plot for EFA model 2
+factor.plot(EFA_Model3.3, title = "Unrotated Factor Loadings for RT with 3 Factors")
+```
+Based on the analysis with 3 factors, RTs for how often other use an idiom and how well liked an idiom is load onto one factor. The relationship between these two and how often an idiom is used is quite different than the single factor loading in 2.2.1. 
+
+
+#### Split data and set up matrix for 3 factor rotation 
+```{r}
+# Establish two sets of indices to split the dataset
+N <- nrow(RI)
+indices <- seq(1,N)
+RT3_indices_EFA <- sample(indices, floor((.5*N)))
+RT3_indices_CFA <- indices[!(indices %in% RT3_indices_EFA)]
+
+# Use those indices to split the dataset into halves for your EFA and CFA
+RT3_EFA <- RT[RT3_indices_EFA, ]
+RT3_CFA <- RT[RT3_indices_CFA, ]
+```
+
+
+#### This shows that there is only 1 significant and one marginally significant shared patterning of variance even with 3 proposed factor loadings. 
+```{r}
+# Calculate the correlation matrix first (Done earlier, but not for split)
+RT3_EFA_cor <- cor(RT3_EFA, use = "pairwise.complete.obs")
+
+# Then use that correlation matrix to calculate eigenvalues
+eigenvals <- eigen(RT3_EFA_cor)
+
+# Look at the eigenvalues returned
+eigenvals$values
+
+```
+
+#### Below Scree plot shows 1 significant factor and one marginally significant.
+```{r}
+# Calculate the correlation matrix first
+RT3_EFA_cor <- cor(RT3_EFA, use = "pairwise.complete.obs")
+
+# Then use that correlation matrix to create the scree plot
+scree(RT3_EFA_cor, factors = FALSE)
+```
+
+#### Bayesian Exploratory: used as a check to see if a different method yields similar results 
+As seen with the EFA, there is a patterning of variance between reaction times when responding to questions about how well liked an idiom is and how often an idiom is used There is also a marginally significant patterning shared by how often an idiom is perceived to be used by others. Interestingly, response times for how well known an idiom is personally and how acceptable a participant judged a given variation do not load on the same factor. This appears to clear up some of the confusion regarding loading of how well an idiom is liked, how often others use it, and how often a given participant uses an idiom. 
+```{r}
+Privstd2 <- scale(RT)
+corrplot(cor(RT))
+
+```
+
+
+\newpage
+
+
+## 2.3 Homogenized data types
+The analysis in 2.3 is not valid as all data is treated as if it were of one type. My goal was simply to gain a better understanding of the impact that not accounting for data type would have. If this were reflective of actual patterning, it appears that 9 factors are needed to account for the variance between the 16 factors. As expected, the responses to how often an idiom is used, how often others use it, and marginally, how well liked an idiom is are still shown as likely measuring the same item. There is a relationship between condition and idiom type. While expected, the fact that they aren't identical when this is simply a recoding of the same category is interesting. Literal uses of idioms are often criticized as invalid comparisons due to a.) a different cognitive meaning computation process for literal versus figurative words and b.) because it is claimed that one will prioritize the figurative interpretation over the literal. In reality, I believe this is due more to the awkwardness of many literal phrases, such as "I was watering the plant and thought I heard it through the grapevine that it needed more water." Further investigation of the different types of idioms within condition may be interesting. Response times for how often others use an idiom and how well liked an idiom is appear to be more related than how often one personally uses an idiom. This could be reflective of a longer thought process when evaluating personal usage frequency but would also be interesting to delve deeper into (...at least until you open the can of worms that is RT validity in a post-perceptual test.)
+
+### 2.3.1 EFA of all data: 
+
+#### FA of RI, including categoric, numeric, ordinal data all in number format but without accounting for differing variable types  
+```{r}
+# Unidimensional FA 
+
+# use fa from psych package 
+RI_all_FA <- fa(RI, nfactors = 2, rotate = "none", fm = "ml")
+
+# View the factor loadings
+RI_all_FA$loadings
+
+# Create a path diagram of the items' factor loadings
+fa.diagram(RI_all_FA)
+
+# Loading on EFA model 2
+print(RI_all_FA$loadings, cutoff = 0.2) 
+```
+
+#### Rotate the Loadings 
+Note: This section is commented out in the knit doc but will run here. 
+```{r}
+# rotated solution
+RI_all_FaRot <- fa(RI, nfactors = 2, rotate = "varimax", fm = "ml")
+
+factor.plot(RI_all_FA, title = "All factors Unrotated")
+factor.plot(RI_all_FaRot, title = "All factors Rotated")
+```
+
+#### Set up matrix to check Eigen values 
+```{r}
+# Establish two sets of indices to split the dataset
+N <- nrow(RI)
+indices <- seq(1,N)
+RI_All_indices_EFA <- sample(indices, floor((.5*N)))
+RI_All_indices_CFA <- indices[!(indices %in% RI_All_indices_EFA)]
+
+# Use those indices to split the dataset into halves for your EFA and CFA
+RI_All_EFA <- RI[RI_All_indices_EFA, ]
+RI_All_CFA <- RI[RI_All_indices_CFA, ]
+```
+
+#### This shows that there are 6 meaningful factors of 16.  
+```{r}
+# Calculate the correlation matrix first (Done earlier, but not for split)
+RI_All_cor <- cor(RI_All_EFA, use = "pairwise.complete.obs")
+
+# Then use that correlation matrix to calculate eigenvalues
+eigenvals <- eigen(RI_All_cor)
+
+# Look at the eigenvalues returned
+eigenvals$values
+
+```
+
+#### Scree plot show 6 significant factors 
+```{r}
+# Calculate the correlation matrix first
+RI_All_cor <- cor(RI_All_EFA, use = "pairwise.complete.obs")
+
+# Then use that correlation matrix to create the scree plot
+scree(RI_All_cor, factors = FALSE)
+```
+ 
+#### Bayesian Exploratory
+Bayesian exploratory analysis conducted to determine whether a different analytic method yields similar results. This analysis uses a mixed corrplot in recognition of the differing types of data. 
+```{r}
+Privstd2 <- scale(RI)
+corrplot.mixed(cor(RI))
+```
+
+
+#### Bayesian information criterion
+This returns the Bayseian information criterion (BIC) as a test of relative fit. The value with 6 factors is very high. This would lead me to believe that 6 factors are not sufficient to explain the 16 categories of RI as the Eigen values from the FA indicated. The lowest BIC is returned using 9 factors.  
+
+```{r}
+# Run each theorized EFA on your dataset
+RI_All_theory <- fa(RI_All_EFA, nfactors = 9)
+RI_All_eigen <- fa(RI_All_EFA, nfactors = 6)
+
+# Compare the BIC values
+RI_All_theory$BIC
+RI_All_eigen$BIC
+```
+
+#### Interval Principal Components of Acceptability RT and Known Idiom RT
+It is expected that these factors should correlate. The results below show that reaction times for acceptability and known idiom do converge. 
+```{r}
+# Extract "Acceptability RT" (st) and "KnowIdiom RT" pg subscales
+library(Gifi)
+
+ART <- RI %>% select(c(11))
+KRT <- RI %>% select(c(12))
+AKRT <- data.frame(ART = ART, KRT = KRT)
+# perform a standard PCA with prcomp()
+pcafit <- prcomp(AKRT, scale = TRUE)
+
+
+# Interval RT spline knots for a linear fit
+knotslin <- knotsGifi(AKRT, type = "E")
+
+# do optimal scaling with princals() for 2-dimensions
+#prlin <- princals(AKRT, ndim = 2,
+ #                 knots = knotslin, 
+  #                degrees = 1)
+#prlin
+prlin <- princals(AKRT, 
+                  ndim = 2,
+                  knots = knotslin, 
+                  degrees = 1,
+                  ordinal = TRUE)
+
+```
+
+#### Interval Principal Components of Acceptability REST and other known REST 
+I believe that these factors are a measure of something similar but the EFA Eigen value did not show them to quite reach significance. This is a verification of that finding. 
+
+The PCA below makes it appear as though these variables do load together. 
+```{r}
+# Extract "Acceptability RT" (st) and "KnowIdiom RT" pg subscales
+
+AccRSP <- RI %>% select(c(6))
+HyouURSP <- RI %>% select(c(8))
+ARSP <- data.frame(AccRSP = AccRSP, HyouURSP = HyouURSP)
+# perform a standard PCA with prcomp()
+pcafit <- prcomp(ARSP, scale = TRUE)
+
+
+# Interval RT spline knots for a linear fit
+knotslin <- knotsGifi(ARSP, type = "D")
+
+# do optimal scaling with princals() for 2-dimensions
+prlin <- princals(ARSP, ndim = 2,
+                  knots = knotslin, 
+                  degrees = 1,
+                  ordinal = TRUE)
+prlin
+```
+
+
+### Princals on Mixed Input Data
+This section sets up the data in RI to perform a valid analysis by taking the data type into account. 
+
+#### Treat some as ordinal and some as metric
+```{r}
+# 1.) Ordinal columns: acceptability rating, how often used response, how often others use response, like use response, 
+
+# Add previously defined Acceptability rating (ARSP)
+# Add previously how often used response (HyouURSP) 
+
+# Add how others use response (HotherRESP)
+HotherRESP <- RI %>% select(c(9)) 
+# Adds how must they like using an idiom (LikeRSP)
+LikeRSP <- RI %>% select(c(10))
+
+Ord <- data.frame(AccRSP, HyouURSP, HotherRESP, LikeRSP)
+
+
+knotsord <- knotsGifi(
+  Ord%>% select(c("AcceptRating.RESP", "HowOftenUse.RESP", "HowOftenOthersUse.RESP", "LikeUsingIdioms.RESP")),
+    type = "D")  
+```
+
+```{r}
+#2.) Metric: Numeric columns: Age, all RT responses
+
+Age <- RI %>% select(c(2)) 
+#AccRT <- RI %>% select(c(11))#redundant
+#KnowRT <- RI %>% select(c(12)) #redundant
+HyouRT <- RI %>% select(c(13))
+HotherRT <- RI %>% select(c(14)) #why row sum
+LikeRT <- RI %>% select(c(15))
+#na <- rowSums(ASTI %>% select(c(3, 6, 8, 12)))
+
+
+Num <- data.frame(Age, ART, KRT, HyouRT, HotherRT, LikeRT)
+
+knotsnum <- knotsGifi(
+    Num %>%  select(c("Age", "KnowIdiom.RT", "HowOftenUse.RT", "HowOftenOthersUse.RT", "LikeUsingIdioms.RT")), 
+    type = "E")
+
+```
+
+```{r}
+
+#3.) Categoric colums: Condition, gender, hand, native language, known idiom, 
+
+Cond <- RI %>% select(c(1)) 
+Gen <- RI %>% select(c(3))
+Hand <- RI %>% select(c(4)) 
+NatLang <- RI %>% select(c(5))
+Known <- RI %>% select(c(7)) 
+
+Cat <- data.frame(Cond, Gen, Hand, NatLang, Known)
+```
+
+```{r}
+# combine the two sets of knots into a final list
+knotslist <- c(knotsord, knotslin)
+
+```
+
+### 2.4 Additional tests
+These were not necessarily related to the question regarding frequency addressed by analyzing RESP and RT for acceptability, use, and how well liked an idiom is. They are however interesting and were helpful in learning to set up the above tests. 
+
+#### Factor Analysis 
+The use of non-native English speakers was HIGHLY unusual as native language intuition is relied upon for figurative language judgments even more so than for literal language judgments. The following analyses were part of my code learning process but would be interesting to look into further. 
+
+#### This looks at only the partial response condition
+```{r}
+#Looks at the partial idiom condition responses only 
+ConditionF <- RI %>% 
+    filter(Condition == "4")
+ConditionF_RSP <- RI %>% 
+    select(ends_with("RESP"))
+fa(ConditionF_RSP)
+```
+
+#### Looks at English Native speakers' responses only 
+```{r}
+SpeakerE <- RI %>% 
+    filter(NativeLang == "1")
+English_RSP <- SpeakerE %>% 
+    select(ends_with("RESP"))
+fa(English_RSP)
+```
+
+#### This looks only at Chinese speakers' responses 
+```{r}
+#Looks at Chinese Native speakers' responses only 
+SpeakerC <- RI %>% 
+    filter(NativeLang == "2")
+Chinese_RSP <- SpeakerC %>% 
+    select(ends_with("RESP"))
+fa(Chinese_RSP)
+```
+
+#### This looks only at Chinese speakers' RTs
+```{r}
+#Looks at Chinese Native speakers' responses only 
+SpeakerC <- RI %>% 
+    filter(NativeLang == "2")
+Chinese_RT <- SpeakerC %>% 
+    select(ends_with("RT"))
+fa(Chinese_RT)
+
+summary(Chinese_RT)
+```
+
+#### Looks at English Native speakers' RT only 
+```{r}
+SpeakerE <- RI %>% 
+    filter(NativeLang == "1")
+English_RT <- SpeakerE %>% 
+    select(ends_with("RT"))
+fa(English_RT)
+
+summary(English_RT)
+```
+More variation is seen between Chinese and English speakers in RT than RESP but there are loading differences in both. 
+
+## Analysis Conclusion
+Based on this analysis, it appears as though acceptability, how often one uses an idiom, how often one perceives others use an idiom, and how well liked a given idiom is may be indicative of the effects referred to as idiomatic frequency. This serves as an interesting starting point to test additional likely formative responses that may aid in the creation of a reliable quantification of factors that should be included in "idiom frequency". Further investigation into variance patterning by condition could add more weight to this idea. This data contradicts some assumptions made by Geeraert et al. 2016 regarding frequency and confirms personal suspicions regarding underlying experiment assumptions. 
+
+
+
+# 3. Data Set Evaluation 
+The final element of this project is a brief evaluation of the data set with respect to one of the FAIR principles. FAIR referees to findable, accessible, interpretable, and reusable. To satisfy the first and second principles, data should be easy to find, openly available, and easy to access access from a data base that is clearly explained. The data used in this analysis was not freely available in an open-source repository. However, it is exceedingly rare for supplementary materials of any kind to be published in my field. Instead, the paper stated that any research-related inquiries  about the paper or data should be directed to the corresponding author. I emailed her to explain my project and to ask if she would be wiling to share any of her data. To my surprise, she replied to my request within a few days and was more than happy to share her raw data along with the R code she used in her analyses.
+
+To satisfy the third and fourth principles, data should be systematically structured, should provide a clear explanation of concepts and representations so that data can be reused, and should  be reusable for future research by including things such as documentation, standards for data quality, attribution guidelines, and citation guidelines. While Dr. Geeraert shared her R code with me, I was not able to get her code to run on my computer. In this sense, the code itself was not immediately reusable. However, it was useful to see how her analysis was set up as I will be doing a similar type of analysis in the very near future. More importantly, her conditions were clearly defined and her stimuli were reasonably controlled for. As such, stimuli used in her original experiment can be used in other studies. Idiom comprehension work suffers from a dearth of unreliable replication, often due to uncontrolled for properties of idioms and differently operationalized constructs between research groups. Recently, some have published norming studies, releasing stimuli that can be reused between experiments to increase comparability. While that was not the primary goal of Geeraert et al. 2017, they are clearly open to sharing data to remedy this methodological flaw. Because this data was shared with me in private, I am not able to upload the raw data analyzed in this project. However, I hope that enough documentation was provided so as to explain the variables I created as well as to walk through the steps of my analysis. Additionally, Dr. Geeraert asked that I share my findings with her since I was analyzing her data in a new way. While my analysis will likely be of little use to her, it promotes an open science approach by sharing data that may be of use at a later date.
+
+# References 
+
+  1. Bobrow, S., Bell, S. (1973). On catching on to idiomatic expressions. Memory and          Cognition, 1, 343–346. 
+
+  2. Cacciari, C., & Tabossi, P. (1988). The comprehension of idioms. Journal of Memory        and Language, 27, 668-683.
+
+  3. Geeraert, K., Newman, J. and Baayen, R.H. (2017). Idiom Variation: Experimental Data      and a Blueprint of a Computational Model. Topics in Cognitive Science, 9, 653-669.        DOI: 10.1111/tops.12263. 
+
+  4. Hockett, C. F. (1958). A Course in Modern Linguistics. New York: Macmillan.
+
+  5. Katz, J. (1973). Compositionality, idiomaticity, and lexical substitution. In             Anderson, S., Kiparsky, P. (Eds.). A Fest-schrift for Morris Halle, 357-376. Holt,        New York. 
+
+  6. Mair, P. (2018). Modern Psychometrics with R (R. Gentleman, K. Hornik, & G.               Parmigiani, Eds.). Springer International Publishing AG.
+
+  7. Marlies, E.C. (1995). You Don’t Die Immediately When You Kick an Empty Bucket: A          Processing View on Semantic and Syntactic Characteristics of idioms. In M. Everaet &      E.J. V.D. Linden & A. Schenk and R. Schreuder (Eds.), Idioms: Structural and              Psychological Perspectives, 283-299.
+
+  8. Mel’cuk, I. (1995). Phrasemes in language and phraseology in linguistics. In              Everaert et al. (Eds.), Idioms, (167-232). Hillsdale N.J.: Lawrence Erlbaum               Associates.
+  
+  9. Nunberg, G., Sag, I. A., & Wasow, T. (1994). Idioms. Language, 70, 491-534.
+  
+  10. Penttila, E. (2010). Prototype-based taxonomy of idiomatic expressions. Applications       of Cognitive Linguistics, 14, 145–162. 2010
+
+  11. Pulman, S.G. (1993). Recognition and Interpretation of Idioms. In Cristina                Cacciari & Patrizia Tabossi (Eds.), Idioms: Processing, Structure, and                    Interpretation, 249-270. NJ: Lawrance Erlbaum Associates.
+  
+  12. Swinney, D., Cutler, A. (1979). The access and processing of idiomatic expressions.       Journal of Verbal Learning and Verbal Behavior, 18, 523–534.
+  
+  13. Weinreich, U. (1969). Problems in the analysis of idioms. Substance and structure of       language, 23-82. University of California Press.
